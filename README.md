@@ -1,6 +1,7 @@
 # magento-gitpod
 
 This repository is an example configuration for setting up Magento 2 as a development envrionment on Gitpod.
+The goal is to have a simple way of creating enviromnets ready for development, that begin quickly and require no further input.
 
 ### Road Map
 - [x] Run Magento fully installed on load
