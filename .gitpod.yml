@@ -23,8 +23,8 @@ tasks:
              sleep 20;
              sudo supervisorctl stop mysql;
              sudo mv /var/lib/mysql $GITPOD_REPO_ROOT/;
-             sed -i 's#/var/lib/mysql#$GITPOD_REPO_ROOT/mysql#g' /etc/mysql/conf.d/mysqld.cnf;
-             sudo sed -i 's#/var/lib/mysql#$GITPOD_REPO_ROOT/mysql#g' /etc/supervisor/conf.d/mysql.conf;
+             sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/mysql/conf.d/mysqld.cnf;
+             sudo sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/supervisor/conf.d/mysql.conf;
              sudo supervisorctl update;
              sudo supervisorctl reload;
              sleep 20;
