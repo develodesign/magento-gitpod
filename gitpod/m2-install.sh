@@ -1,5 +1,4 @@
 #!/bin/bash
-export M2_ADMIN =
 sudo composer selfupdate --2;
 sudo chown -R gitpod:gitpod /home/gitpod/.config/composer;
 cd $GITPOD_REPO_ROOT &&
