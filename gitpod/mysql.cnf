@@ -37,8 +37,8 @@ sort_buffer_size=2G
 tmp_table_size=2G
 transaction-isolation=READ-COMMITTED
 
-general_log_file        = /workspace/teague/var/log/mysql.log
+general_log_file        = $GITPOD_REPO_ROOT/var/log/mysql.log
 general_log             = 1
-log_error               = /workspace/teague/var/log/mysql-error.log
+log_error               = $GITPOD_REPO_ROOT/var/log/mysql-error.log
 
 max_binlog_size     = 100M
