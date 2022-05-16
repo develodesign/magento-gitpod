@@ -10,7 +10,7 @@ Once the Gitpod browser extension is installed [Download Extension](https://www.
 
 
 ## Use in an Existing Project
-Copy the Gitpod folder, gitpod.yml and Docker files to an existing Magento 2 repository to use on your own project.
+Copy the ```Gitpod``` folder, ```gitpod.yml``` and ```.gitpod.Dockerfile``` files to an existing Magento 2 repository to use on your own project.
 
 
 ## Installing an existing database
