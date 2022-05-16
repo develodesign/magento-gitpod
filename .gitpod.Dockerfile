@@ -19,7 +19,7 @@ RUN sudo apt install -y php-dev
 RUN sudo apt install -y php-pear
 RUN sudo apt-get -y install dialog
 
-#Install php-fpm7.4.
+#Install php-fpm7.4
 RUN sudo apt-get update \
     && sudo apt-get install -y curl zip unzip git software-properties-common supervisor sqlite3 \
     && sudo add-apt-repository -y ppa:ondrej/php \
