@@ -14,7 +14,8 @@ vscode:
 tasks:
   - openMode: tab-after
     name: "Services"
-    command: sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
+    command: sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
+             sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
              service nginx start &&
              rm -f /etc/php/7.4/cli/conf.d/20-tideways.ini && rm -f /etc/php/7.4/fpm/conf.d/20-tideways.ini &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-redis.conf /etc/supervisor/conf.d/redis.conf &&
