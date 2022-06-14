@@ -28,5 +28,5 @@ tasks:
              sudo sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/supervisor/conf.d/mysql.conf;
              sudo supervisorctl update;
              sudo supervisorctl reload;
-             sleep 10;
+             sleep 15;
              test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh
