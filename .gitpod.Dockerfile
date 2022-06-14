@@ -141,14 +141,6 @@ RUN source $NVM_DIR/nvm.sh \
 # add node and npm to path so the commands are available
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-    
-RUN curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.16.tar.gz --output elasticsearch-5.6.16.tar.gz \
-    && tar -xzf elasticsearch-5.6.16.tar.gz
-ENV ES_HOME56="$HOME/elasticsearch-5.6.16"
-
-RUN curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.9.tar.gz --output elasticsearch-6.8.9.tar.gz \
-    && tar -xzf elasticsearch-6.8.9.tar.gz
-ENV ES_HOME68="$HOME/elasticsearch-6.8.9"
 
 RUN curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz --output elasticsearch-7.9.3-linux-x86_64.tar.gz \
     && tar -xzf elasticsearch-7.9.3-linux-x86_64.tar.gz
