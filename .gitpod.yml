@@ -29,4 +29,4 @@ tasks:
              sudo supervisorctl update;
              sudo supervisorctl reload;
              sleep 10;
-             test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && sudo $GITPOD_REPO_ROOT/gitpod/m2-install.sh
+             test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh
