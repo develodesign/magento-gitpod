@@ -14,13 +14,12 @@ vscode:
 tasks:
   - openMode: tab-after
     name: "Services"
-    command: sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
+    command: service nginx start &
+             sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
-             service nginx start &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-redis.conf /etc/supervisor/conf.d/redis.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf &&
              sudo sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf &&
-             sleep 5;
              sudo /etc/init.d/supervisor start;
              sleep 15;
              sudo supervisorctl stop mysql;
