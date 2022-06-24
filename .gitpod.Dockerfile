@@ -101,12 +101,6 @@ RUN sudo apt-get update \
  RUN wget https://files.magerun.net/n98-magerun2.phar \
      && chmod +x ./n98-magerun2.phar \
      && sudo mv ./n98-magerun2.phar /usr/local/bin/n98-magerun2
-     
-#Install APCU..
-RUN echo "apc.enable_cli=1" > /etc/php/8.1/cli/conf.d/20-apcu.ini
-RUN echo "priority=25" > /etc/php/8.1/cli/conf.d/25-apcu_bc.ini
-RUN echo "extension=apcu.so" >> /etc/php/8.1/cli/conf.d/25-apcu_bc.ini
-RUN echo "extension=apc.so" >> /etc/php/8.1/cli/conf.d/25-apcu_bc.ini
 
 RUN sudo chown -R gitpod:gitpod /etc/php
 RUN sudo chown -R gitpod:gitpod /etc/nginx
