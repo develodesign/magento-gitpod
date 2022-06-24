@@ -45,8 +45,6 @@ RUN echo "xdebug.remote_enable=on" >> /etc/php/8.1/mods-available/xdebug.ini
     #&& echo "xdebug.profiler_output_name = gitpod_xdebug.log >> /etc/php/8.1/mods-available/xdebug.ini \
     #&& echo "xdebug.show_error_trace=On" >> /etc/php/8.1/mods-available/xdebug.ini \
     #&& echo "xdebug.show_exception_trace=On" >> /etc/php/8.1/mods-available/xdebug.ini
-RUN mv /etc/php/8.1/cli/conf.d/20-xdebug.ini /etc/php/8.1/cli/conf.d/20-xdebug.ini-bak
-RUN mv /etc/php/8.1/fpm/conf.d/20-xdebug.ini /etc/php/8.1/fpm/conf.d/20-xdebug.ini-bak
 
 # Install MySQL
 ENV PERCONA_MAJOR 5.7
