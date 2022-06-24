@@ -19,13 +19,13 @@ RUN sudo apt install -y php-dev
 RUN sudo apt install -y php-pear
 RUN sudo apt-get -y install dialog
 
-#Install php-fpm7.4
+#Install php-fpm8.1
 RUN sudo apt-get update \
     && sudo apt-get install -y curl zip unzip git software-properties-common supervisor sqlite3 \
     && sudo add-apt-repository -y ppa:ondrej/php \
     && sudo apt-get update \
-    && sudo apt-get install -y php7.4-dev php7.4-fpm php7.4-common php7.4-cli php7.4-imagick php7.4-gd php7.4-mysql php7.4-pgsql php7.4-imap php-memcached php7.4-mbstring php7.4-xml php7.4-xmlrpc php7.4-soap php7.4-zip php7.4-curl php7.4-bcmath php7.4-sqlite3 php7.4-apcu php7.4-apcu-bc php7.4-intl php-dev php7.4-dev php7.4-xdebug php-redis \
-    && sudo php -r "readfile('http://getcomposer.org/installer');" | sudo php -- --install-dir=/usr/bin/ --version=1.10.16 --filename=composer \
+    && sudo apt-get install -y php8.1-dev php8.1-fpm php8.1-common php8.1-cli php8.1-imagick php8.1-gd php8.1-mysql php8.1-pgsql php8.1-imap php-memcached php8.1-mbstring php8.1-xml php8.1-xmlrpc php8.1-soap php8.1-zip php8.1-curl php8.1-bcmath php8.1-sqlite3 php8.1-intl php-dev php8.1-dev php-redis \
+    && sudo php -r "readfile('http://getcomposer.org/installer');" | sudo php -- --install-dir=/usr/bin/ --version=2.3.5 --filename=composer \
     && sudo mkdir /run/php \
     && sudo chown gitpod:gitpod /run/php \
     && sudo chown -R gitpod:gitpod /etc/php \
@@ -35,19 +35,18 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && sudo update-alternatives --remove php /usr/bin/php8.0 \
     && sudo update-alternatives --remove php /usr/bin/php7.3 \
-    && sudo update-alternatives --set php /usr/bin/php7.4 \
+    && sudo update-alternatives --set php /usr/bin/php8.1 \
     && sudo echo "daemon off;" >> /etc/nginx/nginx.conf
 
 #Adjust few options for xDebug and disable it by default
-RUN echo "xdebug.remote_enable=on" >> /etc/php/7.4/mods-available/xdebug.ini
-    #&& echo "xdebug.remote_autostart=on" >> /etc/php/7.4/mods-available/xdebug.ini
-    #&& echo "xdebug.profiler_enable=On" >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.profiler_output_dir = /var/log/" >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.profiler_output_name = gitpod_xdebug.log >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.show_error_trace=On" >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.show_exception_trace=On" >> /etc/php/7.4/mods-available/xdebug.ini
-RUN mv /etc/php/7.4/cli/conf.d/20-xdebug.ini /etc/php/7.4/cli/conf.d/20-xdebug.ini-bak
-RUN mv /etc/php/7.4/fpm/conf.d/20-xdebug.ini /etc/php/7.4/fpm/conf.d/20-xdebug.ini-bak
+RUN echo "xdebug.remote_enable=on" >> /etc/php/8.1/mods-available/xdebug.ini
+    #&& echo "xdebug.remote_autostart=on" >> /etc/php/8.1/mods-available/xdebug.ini
+    #&& echo "xdebug.profiler_enable=On" >> /etc/php/8.1/mods-available/xdebug.ini \
+    #&& echo "xdebug.profiler_output_name = gitpod_xdebug.log >> /etc/php/8.1/mods-available/xdebug.ini \
+    #&& echo "xdebug.show_error_trace=On" >> /etc/php/8.1/mods-available/xdebug.ini \
+    #&& echo "xdebug.show_exception_trace=On" >> /etc/php/8.1/mods-available/xdebug.ini
+RUN mv /etc/php/8.1/cli/conf.d/20-xdebug.ini /etc/php/8.1/cli/conf.d/20-xdebug.ini-bak
+RUN mv /etc/php/8.1/fpm/conf.d/20-xdebug.ini /etc/php/8.1/fpm/conf.d/20-xdebug.ini-bak
 
 # Install MySQL
 ENV PERCONA_MAJOR 5.7
@@ -88,7 +87,7 @@ COPY gitpod/client.cnf /etc/mysql/conf.d/client.cnf
 
 #Copy nginx default and php-fpm.conf file
 #COPY default /etc/nginx/sites-available/default
-COPY gitpod/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
+COPY gitpod/php-fpm.conf /etc/php/8.1/fpm/php-fpm.conf
 COPY gitpod/sp-php-fpm.conf /etc/supervisor/conf.d/sp-php-fpm.conf
 RUN sudo chown -R gitpod:gitpod /etc/php
 
@@ -106,10 +105,10 @@ RUN sudo apt-get update \
      && sudo mv ./n98-magerun2.phar /usr/local/bin/n98-magerun2
      
 #Install APCU..
-RUN echo "apc.enable_cli=1" > /etc/php/7.4/cli/conf.d/20-apcu.ini
-RUN echo "priority=25" > /etc/php/7.4/cli/conf.d/25-apcu_bc.ini
-RUN echo "extension=apcu.so" >> /etc/php/7.4/cli/conf.d/25-apcu_bc.ini
-RUN echo "extension=apc.so" >> /etc/php/7.4/cli/conf.d/25-apcu_bc.ini
+RUN echo "apc.enable_cli=1" > /etc/php/8.1/cli/conf.d/20-apcu.ini
+RUN echo "priority=25" > /etc/php/8.1/cli/conf.d/25-apcu_bc.ini
+RUN echo "extension=apcu.so" >> /etc/php/8.1/cli/conf.d/25-apcu_bc.ini
+RUN echo "extension=apc.so" >> /etc/php/8.1/cli/conf.d/25-apcu_bc.ini
 
 RUN sudo chown -R gitpod:gitpod /etc/php
 RUN sudo chown -R gitpod:gitpod /etc/nginx
@@ -117,7 +116,7 @@ RUN sudo chown -R gitpod:gitpod /etc/init.d/
 RUN sudo echo "net.core.somaxconn=65536" | sudo tee /etc/sysctl.conf
 
 RUN sudo rm -f /usr/bin/php
-RUN sudo ln -s /usr/bin/php7.4 /usr/bin/php
+RUN sudo ln -s /usr/bin/php8.1 /usr/bin/php
 
 # nvm environment variables
 RUN sudo mkdir -p /usr/local/nvm
