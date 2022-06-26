@@ -1,13 +1,4 @@
 #!/bin/bash
-sudo composer selfupdate --2;
-sudo chown -R gitpod:gitpod /home/gitpod/.config/composer;
-cd $GITPOD_REPO_ROOT &&
-composer config -g -a http-basic.repo.magento.com 64229a8ef905329a184da4f174597d25 a0df0bec06011c7f1e8ea8833ca7661e &&
-composer create-project --no-interaction --no-progress --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.3-p2 magento2
-cd magento2 && cp -avr .* $GITPOD_REPO_ROOT;
-cd $GITPOD_REPO_ROOT && rm -r -f magento2 && git checkout -- .gitignore;
-
-
 mysql -u root -pnem4540 -e 'CREATE DATABASE IF NOT EXISTS magento2;' &&
 url=$(gp url | awk -F"//" {'print $2'}) && url+="/" && url="https://8002-"$url && php bin/magento setup:install --db-name='magento2' --db-user='root' --db-password='nem4540' --base-url=$url --backend-frontname='admin' --admin-user='admin' --admin-password='adm4540' --admin-email=$GITPOD_GIT_USER_EMAIL --admin-firstname='Admin' --admin-lastname='User' --use-rewrites='1' --use-secure='1' --base-url-secure=$url --use-secure-admin='1' --language='en_GB' --db-host='127.0.0.1' --cleanup-database --timezone='Europe/London' --currency='GBP' --session-save='redis' &&
 
