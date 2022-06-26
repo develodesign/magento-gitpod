@@ -14,12 +14,13 @@ vscode:
 tasks:
   - openMode: tab-after
     name: "Services"
-    command: service nginx start &
-             sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
+    init: $GITPOD_REPO_ROOT/gitpod/m2-install.sh
+    command: sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-redis.conf /etc/supervisor/conf.d/redis.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf &&
              sudo sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf &&
+             service nginx start &
              sudo /etc/init.d/supervisor start & \
              sleep 15;
              sudo supervisorctl stop mysql;
@@ -28,5 +29,3 @@ tasks:
              sudo sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/supervisor/conf.d/mysql.conf;
              sudo supervisorctl update;
              sudo supervisorctl reload;
-             sleep 15;
-             test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh
