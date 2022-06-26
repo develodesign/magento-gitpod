@@ -11,6 +11,10 @@ vscode:
   extensions:
     - TabNine.tabnine-vscode@3.4.14
     - felixfbecker.php-debug@1.16.0
+github:
+  prebuilds:
+    master: true
+    branches: true
 tasks:
   - openMode: tab-after
     name: "Services"
