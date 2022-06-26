@@ -11,15 +11,26 @@ vscode:
   extensions:
     - TabNine.tabnine-vscode@3.4.14
     - felixfbecker.php-debug@1.16.0
+github:
+  prebuilds:
+    master: true
+    branches: true
 tasks:
   - openMode: tab-after
     name: "Services"
-    command: service nginx start &
-             sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
+    init: sudo composer selfupdate --2;
+          sudo chown -R gitpod:gitpod /home/gitpod/.config/composer;
+          cd $GITPOD_REPO_ROOT &&
+          composer config -g -a http-basic.repo.magento.com 64229a8ef905329a184da4f174597d25 a0df0bec06011c7f1e8ea8833ca7661e &&
+          composer create-project --no-interaction --no-progress --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.3-p2 magento2 &&
+          cd magento2 && cp -avr .* $GITPOD_REPO_ROOT;
+          cd $GITPOD_REPO_ROOT && rm -r -f magento2 && git checkout -- .gitignore;
+    command: sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-redis.conf /etc/supervisor/conf.d/redis.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf &&
              sudo sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf &&
+             service nginx start &
              sudo /etc/init.d/supervisor start & \
              sleep 15;
              sudo supervisorctl stop mysql;
