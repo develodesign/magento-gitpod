@@ -1,4 +1,5 @@
 FROM gitpod/workspace-full:latest
+RUN sudo install-packages php-xdebug
 
 RUN sudo apt-get update
 RUN sudo apt-get -y install lsb-release
