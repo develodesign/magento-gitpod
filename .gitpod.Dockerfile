@@ -22,7 +22,6 @@ ENV XDEBUG_DEFAULT_ENABLED YES
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-RUN sudo install-packages php-xdebug
 RUN sudo apt-get update
 RUN sudo apt-get -y install lsb-release
 RUN sudo apt-get -y install apt-utils
@@ -40,6 +39,7 @@ RUN sudo mkdir -p /tmp/pear/cache
 RUN sudo mkdir -p /etc/bash_completion.d/cargo
 RUN sudo apt install -y php-dev
 RUN sudo apt install -y php-pear
+RUN sudo install-packages php-xdebug
 RUN sudo apt-get -y install dialog
 
 #Install php-fpm
