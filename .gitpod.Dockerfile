@@ -66,7 +66,7 @@ RUN echo "xdebug.remote_enable=on" >> /etc/php/${PHP_VERSION}/mods-available/xde
     #&& echo "xdebug.profiler_output_name = gitpod_xdebug.log >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
     #&& echo "xdebug.show_error_trace=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
     #&& echo "xdebug.show_exception_trace=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
-RUN if [ ! "$XDEBUG_DEFAULT_ENABLED" = "YES" ]; \
+RUN if [ ! "$XDEBUG_DEFAULT_ENABLED" = "YES" ]; then \
         RUN mv /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini-bak \
         RUN mv /etc/php/${PHP_VERSION}/fpm/conf.d/20-xdebug.ini /etc/php/${PHP_VERSION}/fpm/conf.d/20-xdebug.ini-bak \
     fi 
