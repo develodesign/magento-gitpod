@@ -40,7 +40,6 @@ RUN sudo mkdir -p /etc/bash_completion.d/cargo
 RUN sudo apt install -y php-dev
 RUN sudo apt install -y php-pear
 RUN sudo install-packages php-xdebug
-RUN sudo apt-get -y install dialog
 
 #Install php-fpm
 RUN sudo apt-get update \
