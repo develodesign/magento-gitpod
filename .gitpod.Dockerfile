@@ -1,5 +1,27 @@
 FROM gitpod/workspace-full:latest
 
+# Magento Config
+ENV INSTALL_MAGENTO YES
+ENV MAGENTO_VERSION 2.4.4
+ENV MAGENTO_ADMIN_EMAIL admin@magento.com
+ENV MAGENTO_ADMIN_PASSWORD password1
+ENV MAGENTO_ADMIN_USERNAME admin
+ENV MAGENTO_COMPOSER_AUTH_USER 64229a8ef905329a184da4f174597d25
+ENV MAGENTO_COMPOSER_AUTH_PASS a0df0bec06011c7f1e8ea8833ca7661e
+
+# Platform Config, create gitpod/php-fpmX.X.conf before updating PHP Version
+ENV PHP_VERSION 8.1
+ENV PERCONA_MAJOR 5.7
+ENV ELASTICSEARCH_VERSION 7.9.3
+ENV COMPOSER_VERSION 2.3.5
+ENV NODE_VERSION 14.17.3
+ENV MYSQL_ROOT_PASSWORD nem4540
+ENV XDEBUG_DEFAULT_ENABLED YES
+
+# add node and npm to path so the commands are available
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
 RUN sudo apt-get update
 RUN sudo apt-get -y install lsb-release
 RUN sudo apt-get -y install apt-utils
@@ -17,15 +39,15 @@ RUN sudo mkdir -p /tmp/pear/cache
 RUN sudo mkdir -p /etc/bash_completion.d/cargo
 RUN sudo apt install -y php-dev
 RUN sudo apt install -y php-pear
-RUN sudo apt-get -y install dialog
+RUN sudo install-packages php-xdebug
 
-#Install php-fpm7.4
+#Install php-fpm
 RUN sudo apt-get update \
     && sudo apt-get install -y curl zip unzip git software-properties-common supervisor sqlite3 \
     && sudo add-apt-repository -y ppa:ondrej/php \
     && sudo apt-get update \
-    && sudo apt-get install -y php7.4-dev php7.4-fpm php7.4-common php7.4-cli php7.4-imagick php7.4-gd php7.4-mysql php7.4-pgsql php7.4-imap php-memcached php7.4-mbstring php7.4-xml php7.4-xmlrpc php7.4-soap php7.4-zip php7.4-curl php7.4-bcmath php7.4-sqlite3 php7.4-apcu php7.4-apcu-bc php7.4-intl php-dev php7.4-dev php7.4-xdebug php-redis \
-    && sudo php -r "readfile('http://getcomposer.org/installer');" | sudo php -- --install-dir=/usr/bin/ --version=1.10.16 --filename=composer \
+    && sudo apt-get install -y php${PHP_VERSION}-dev php${PHP_VERSION}-fpm php${PHP_VERSION}-common php${PHP_VERSION}-cli php${PHP_VERSION}-imagick php${PHP_VERSION}-gd php${PHP_VERSION}-mysql php${PHP_VERSION}-pgsql php${PHP_VERSION}-imap php-memcached php${PHP_VERSION}-mbstring php${PHP_VERSION}-xml php${PHP_VERSION}-xmlrpc php${PHP_VERSION}-soap php${PHP_VERSION}-zip php${PHP_VERSION}-curl php${PHP_VERSION}-bcmath php${PHP_VERSION}-sqlite3 php${PHP_VERSION}-intl php-dev php${PHP_VERSION}-dev php${PHP_VERSION}-xdebug php-redis \
+    && sudo php -r "readfile('http://getcomposer.org/installer');" | sudo php -- --install-dir=/usr/bin/ --version=${COMPOSER_VERSION} --filename=composer \
     && sudo mkdir /run/php \
     && sudo chown gitpod:gitpod /run/php \
     && sudo chown -R gitpod:gitpod /etc/php \
@@ -33,24 +55,21 @@ RUN sudo apt-get update \
     && sudo apt-get -y autoremove \
     && sudo apt-get clean \
     && sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && sudo update-alternatives --remove php /usr/bin/php8.0 \
-    && sudo update-alternatives --remove php /usr/bin/php7.3 \
-    && sudo update-alternatives --set php /usr/bin/php7.4 \
+    && sudo update-alternatives --set php /usr/bin/php${PHP_VERSION} \
     && sudo echo "daemon off;" >> /etc/nginx/nginx.conf
 
 #Adjust few options for xDebug and disable it by default
-RUN echo "xdebug.remote_enable=on" >> /etc/php/7.4/mods-available/xdebug.ini
-    #&& echo "xdebug.remote_autostart=on" >> /etc/php/7.4/mods-available/xdebug.ini
-    #&& echo "xdebug.profiler_enable=On" >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.profiler_output_dir = /var/log/" >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.profiler_output_name = gitpod_xdebug.log >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.show_error_trace=On" >> /etc/php/7.4/mods-available/xdebug.ini \
-    #&& echo "xdebug.show_exception_trace=On" >> /etc/php/7.4/mods-available/xdebug.ini
-RUN mv /etc/php/7.4/cli/conf.d/20-xdebug.ini /etc/php/7.4/cli/conf.d/20-xdebug.ini-bak
-RUN mv /etc/php/7.4/fpm/conf.d/20-xdebug.ini /etc/php/7.4/fpm/conf.d/20-xdebug.ini-bak
+RUN echo "xdebug.remote_enable=on" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
+    #&& echo "xdebug.remote_autostart=on" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
+    #&& echo "xdebug.profiler_enable=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
+    #&& echo "xdebug.profiler_output_dir = /var/log/" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
+    #&& echo "xdebug.profiler_output_name = gitpod_xdebug.log >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
+    #&& echo "xdebug.show_error_trace=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
+    #&& echo "xdebug.show_exception_trace=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
+    
+RUN if [ ! "$XDEBUG_DEFAULT_ENABLED" = "YES" ]; then mv /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini-bak fi
 
 # Install MySQL
-ENV PERCONA_MAJOR 5.7
 RUN sudo apt-get update \
  && sudo apt-get -y install gnupg2 \
  && sudo apt-get clean && sudo rm -rf /var/cache/apt/* /var/lib/apt/lists/* /tmp/* \
@@ -64,15 +83,15 @@ RUN set -ex; \
 		for key in \
 			percona-server-server/root_password \
 			percona-server-server/root_password_again \
-			"percona-server-server-$PERCONA_MAJOR/root-pass" \
-			"percona-server-server-$PERCONA_MAJOR/re-root-pass" \
+			"percona-server-server-${PERCONA_MAJOR}/root-pass" \
+			"percona-server-server-${PERCONA_MAJOR}/re-root-pass" \
 		; do \
-			sudo echo "percona-server-server-$PERCONA_MAJOR" "$key" password 'nem4540'; \
+			sudo echo "percona-server-server-${PERCONA_MAJOR}" "$key" password ${MYSQL_ROOT_PASSWORD}; \
 		done; \
 	} | sudo debconf-set-selections; \
 	sudo apt-get update; \
 	sudo apt-get install -y \
-		percona-server-server-5.7 percona-server-client-5.7 percona-server-common-5.7 \
+		percona-server-server-${PERCONA_MAJOR} percona-server-client-${PERCONA_MAJOR} percona-server-common-${PERCONA_MAJOR} \
 	;
 	
 RUN sudo chown -R gitpod:gitpod /etc/mysql /var/run/mysqld /var/log/mysql /var/lib/mysql /var/lib/mysql-files /var/lib/mysql-keyring
@@ -88,7 +107,7 @@ COPY gitpod/client.cnf /etc/mysql/conf.d/client.cnf
 
 #Copy nginx default and php-fpm.conf file
 #COPY default /etc/nginx/sites-available/default
-COPY gitpod/php-fpm.conf /etc/php/7.4/fpm/php-fpm.conf
+COPY gitpod/php-fpm.conf /etc/php/${PHP_VERSION}/fpm/php-fpm.conf
 COPY gitpod/sp-php-fpm.conf /etc/supervisor/conf.d/sp-php-fpm.conf
 RUN sudo chown -R gitpod:gitpod /etc/php
 
@@ -104,12 +123,6 @@ RUN sudo apt-get update \
  RUN wget https://files.magerun.net/n98-magerun2.phar \
      && chmod +x ./n98-magerun2.phar \
      && sudo mv ./n98-magerun2.phar /usr/local/bin/n98-magerun2
-     
-#Install APCU..
-RUN echo "apc.enable_cli=1" > /etc/php/7.4/cli/conf.d/20-apcu.ini
-RUN echo "priority=25" > /etc/php/7.4/cli/conf.d/25-apcu_bc.ini
-RUN echo "extension=apcu.so" >> /etc/php/7.4/cli/conf.d/25-apcu_bc.ini
-RUN echo "extension=apc.so" >> /etc/php/7.4/cli/conf.d/25-apcu_bc.ini
 
 RUN sudo chown -R gitpod:gitpod /etc/php
 RUN sudo chown -R gitpod:gitpod /etc/nginx
@@ -117,13 +130,12 @@ RUN sudo chown -R gitpod:gitpod /etc/init.d/
 RUN sudo echo "net.core.somaxconn=65536" | sudo tee /etc/sysctl.conf
 
 RUN sudo rm -f /usr/bin/php
-RUN sudo ln -s /usr/bin/php7.4 /usr/bin/php
+RUN sudo ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php
 
 # nvm environment variables
 RUN sudo mkdir -p /usr/local/nvm
 RUN sudo chown gitpod:gitpod /usr/local/nvm
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 14.17.3
 
 # Replace shell with bash so we can source files.
 RUN sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh
@@ -138,12 +150,8 @@ RUN source $NVM_DIR/nvm.sh \
   && nvm alias default $NODE_VERSION \
   && nvm use default
 
-# add node and npm to path so the commands are available
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-
-RUN curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-linux-x86_64.tar.gz --output elasticsearch-7.9.3-linux-x86_64.tar.gz \
-    && tar -xzf elasticsearch-7.9.3-linux-x86_64.tar.gz
-ENV ES_HOME79="$HOME/elasticsearch-7.9.3"
+RUN curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz --output elasticsearch-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz \
+    && tar -xzf elasticsearch-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
+ENV ES_HOME="$HOME/elasticsearch-${ELASTICSEARCH_VERSION}"
 
 COPY gitpod/sp-elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf
