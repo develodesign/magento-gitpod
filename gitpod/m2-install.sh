@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 12;
 mysql -u root -pnem4540 -e 'CREATE DATABASE IF NOT EXISTS magento2;' &&
 url=$(gp url | awk -F"//" {'print $2'}) && url+="/" && 
 url="https://8002-"$url && 
