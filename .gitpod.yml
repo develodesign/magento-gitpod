@@ -38,5 +38,5 @@ tasks:
              sudo mv /var/lib/mysql $GITPOD_REPO_ROOT/;
              sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/mysql/conf.d/mysqld.cnf;
              sudo sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/supervisor/conf.d/mysql.conf;
-             sudo /etc/init.d/supervisor start & \
+             sudo /etc/init.d/supervisor start & \ ;
              test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh
