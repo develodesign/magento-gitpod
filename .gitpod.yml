@@ -37,4 +37,8 @@ tasks:
              sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/mysql/conf.d/mysqld.cnf;
              sudo sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/supervisor/conf.d/mysql.conf;
              sudo /etc/init.d/supervisor start & \ ;
-             test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh
+             test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh;
+             url=$(gp url | awk -F"//" {'print $2'}) && url="https://8002-"$url"/";
+             php bin/magento config:set web/unsecure/base_url $url;
+             php bin/magento config:set web/unsecure/base_link_url $url;
+             php bin/magento config:set web/secure/base_url $url;
