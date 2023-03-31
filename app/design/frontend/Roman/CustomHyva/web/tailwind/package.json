@@ -1,0 +1,32 @@
+{
+  "name": "@hyva-themes/magento2-default-theme",
+  "version": "3.0.0",
+  "description": "Hyvä-Themes Default Theme, a TailwindCSS and Alpine.js based Magento frontend theme that makes eCommerce happy.",
+  "main": "tailwind.config.js",
+  "dependencies": {
+    "@hyva-themes/hyva-modules": "^1.0.4",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.7",
+    "autoprefixer": "^10.4.13",
+    "browser-sync": "^2.29.1",
+    "postcss-import": "^14.1.0",
+    "tailwindcss": "^3.2.4"
+  },
+  "devDependencies": {
+    "postcss": "^8.4.18"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production npx tailwindcss --postcss -i tailwind-source.css -o ../css/styles.css --minify",
+    "watch": "NODE_ENV=development npx tailwindcss --postcss -i tailwind-source.css -o ../css/styles.css  --watch --verbose",
+    "build-dev": "echo DEVELOPMENT builds are NOT SUPPORTED by tailwind v3, please use the 'watch' or 'build-prod' commands instead. && exit 1",
+    "build-prod": "npm run build && npm run output-success",
+    "browser-sync": "browser-sync start --config ./browser-sync.config.js",
+    "output-success": "echo \"\\033[0;32mDone!\\033[0m\""
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "Hyvä Themes BV",
+  "license": "proprietary",
+  "private": true
+}

@@ -1,0 +1,7 @@
+#customer-login-container {
+    @apply flex flex-col justify-between py-8;
+
+    @screen md {
+        @apply flex-row;
+    }
+}

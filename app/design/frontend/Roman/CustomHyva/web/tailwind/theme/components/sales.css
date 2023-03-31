@@ -1,0 +1,31 @@
+.order-items > div:nth-child(even) {
+    @apply bg-container-darker;
+}
+
+.order-links {
+    @apply block;
+    @apply items-center;
+    @apply bg-container;
+}
+
+.order-links li {
+    @apply inline-block;
+    @apply py-2;
+    @apply px-4;
+    @apply cursor-pointer;
+    @apply whitespace-nowrap;
+
+}
+
+.order-links li.current {
+    @apply flex-grow;
+    @apply text-primary;
+}
+
+.order-links li a {
+    @apply underline;
+}
+
+.order-date {
+    @apply text-sm;
+}
