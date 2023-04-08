@@ -25,7 +25,7 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN sudo apt-get update
 RUN sudo apt-get -y install lsb-release
 RUN sudo apt-get -y install apt-utils
-RUN sudo apt-get -y install python
+RUN sudo apt-get -y install python-is-python3
 RUN sudo apt-get install -y libmysqlclient-dev
 RUN sudo apt-get -y install rsync
 RUN sudo apt-get -y install curl
