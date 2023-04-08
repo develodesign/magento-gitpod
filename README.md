@@ -1,3 +1,6 @@
+![Gitpod for Magento 2 Development](http://www.develodesign.co.uk/gitpod.png)
+[Click here to Learn more about Gitpod for Magento 2 on our Course](https://develo.teachable.com/p/mastering-gitpod-for-magento-2-development)
+
 # Magento 2 Gitpod Cloud Development Environment
 
 This repository contains a Gitpod configuration for a Magento 2 cloud development environment. 
@@ -27,7 +30,7 @@ All configuration options including Magento versions and Admin login are found h
 - [x] Install Magento SQL once on first load, delete flag to reinstall
 - [x] Import staging SQL file replacing urls 
 - [x] Improve config to simplify configuring the build components
-- [x] Magento 2.4.4 and PHP8.1 support
+- [ ] Magento 2.4.6 and PHP8.2 support
 - [ ] Add additional SQL and config updates, Magento config for SMTP details, Algolia indexing etc. 
 - [ ] Accept values for Magento configuration through Gitpod ENV
 
