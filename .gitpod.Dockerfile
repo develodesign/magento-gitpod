@@ -61,7 +61,7 @@ RUN sudo apt-get update \
     && sudo echo "daemon off;" >> /etc/nginx/nginx.conf
 
 #Adjust few options for xDebug and disable it by default
-RUN echo "xdebug.remote_enable=on" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
+RUN sudo echo "xdebug.remote_enable=on" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
     #&& echo "xdebug.remote_autostart=on" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
     #&& echo "xdebug.profiler_enable=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
     #&& echo "xdebug.profiler_output_dir = /var/log/" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
@@ -69,7 +69,7 @@ RUN echo "xdebug.remote_enable=on" >> /etc/php/${PHP_VERSION}/mods-available/xde
     #&& echo "xdebug.show_error_trace=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
     #&& echo "xdebug.show_exception_trace=On" >> /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
     
-RUN if [ ! "$XDEBUG_DEFAULT_ENABLED" = "YES" ]; then mv /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini-bak; fi
+RUN if [ ! "$XDEBUG_DEFAULT_ENABLED" = "YES" ]; then sudo mv /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini /etc/php/${PHP_VERSION}/cli/conf.d/20-xdebug.ini-bak; fi
 
 # Install MySQL
 RUN sudo apt-get update \
