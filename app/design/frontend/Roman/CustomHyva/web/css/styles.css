@@ -2476,6 +2476,14 @@ a.pagebuilder-button-secondary:focus, button.pagebuilder-button-secondary:focus,
   z-index: 50;
 }
 
+.m-8 {
+  margin: 2rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
 .mt-10 {
   margin-top: 2.5rem;
 }
@@ -2498,6 +2506,10 @@ a.pagebuilder-button-secondary:focus, button.pagebuilder-button-secondary:focus,
 
 .hidden {
   display: none;
+}
+
+.h-64 {
+  height: 16rem;
 }
 
 .max-h-screen {
@@ -2532,6 +2544,11 @@ a.pagebuilder-button-secondary:focus, button.pagebuilder-button-secondary:focus,
   border-radius: 0.5rem;
 }
 
+.bg-primary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(29 78 216 / var(--tw-bg-opacity));
+}
+
 .bg-black {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity));
@@ -2544,6 +2561,10 @@ a.pagebuilder-button-secondary:focus, button.pagebuilder-button-secondary:focus,
 
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .p-10 {
@@ -2570,6 +2591,11 @@ a.pagebuilder-button-secondary:focus, button.pagebuilder-button-secondary:focus,
   text-align: left;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -2577,6 +2603,11 @@ a.pagebuilder-button-secondary:focus, button.pagebuilder-button-secondary:focus,
 
 .font-bold {
   font-weight: 700;
+}
+
+.text-red {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 
 .opacity-0 {
