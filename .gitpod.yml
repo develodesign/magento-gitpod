@@ -18,7 +18,6 @@ github:
     master: true
     branches: true
 tasks:
-  - name: "Install Magento"
   - init: > 
             sudo composer self-update &&
             cd $GITPOD_REPO_ROOT &&
