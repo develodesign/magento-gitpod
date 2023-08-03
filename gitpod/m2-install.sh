@@ -3,16 +3,16 @@ GITPOD_DIR=$GITPOD_REPO_ROOT/gitpod/;
 REPO_ROOT=$GITPOD_REPO_ROOT/;
 
 echo "============ 1. Install Magento if required =========="
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e 'CREATE DATABASE IF NOT EXISTS magento2;'
 url=$(gp url | awk -F"//" {'print $2'}) && url+="/" && 
 url="https://8002-"$url && 
-if [ "${INSTALL_MAGENTO}" = "YES" ]; then php bin/magento setup:install --db-name='magento2' --db-user='root' --db-password='nem4540' --base-url=$url --backend-frontname='admin' --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD --admin-email=$GITPOD_GIT_USER_EMAIL --admin-firstname='Admin' --admin-lastname='User' --use-rewrites='1' --use-secure='1' --base-url-secure=$url --use-secure-admin='1' --language='en_GB' --db-host='127.0.0.1' --cleanup-database --timezone='Europe/London' --currency='GBP' --session-save='redis'; fi &&
+if [ "${INSTALL_MAGENTO}" = "YES" ]; then php bin/magento setup:install --db-name='magento2' --db-user='root' --db-password=$MYSQL_ROOT_PASSWORD --base-url=$url --backend-frontname='admin' --admin-user=$MAGENTO_ADMIN_USERNAME --admin-password=$MAGENTO_ADMIN_PASSWORD --admin-email=$GITPOD_GIT_USER_EMAIL --admin-firstname='Admin' --admin-lastname='User' --use-rewrites='1' --use-secure='1' --base-url-secure=$url --use-secure-admin='1' --language='en_GB' --db-host='127.0.0.1' --cleanup-database --timezone='Europe/London' --currency='GBP' --session-save='redis'; fi &&
 echo "----------------------------------------------"
 
 echo "================ 2. INSTALL DB ==============="
 ### UNCOMMENT if using an existing Magento staging DB instead of using the default blank M2 ** ###
 #cd $GITPOD_REPO_ROOT/gitpod && unzip magento-db.sql.zip && 
 #sed -i 's#staging-domain.com#'$url'#g' magento-db.sql && 
-#mysql -uroot -pnem4540 -e 'CREATE DATABASE IF NOT EXISTS magento2;' &&
 #mysql -uroot -pnem4540 magento2 < magento-db.sql && 
 echo "----------------------------------------------"
 
