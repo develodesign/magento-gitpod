@@ -132,6 +132,19 @@ RUN sudo echo "net.core.somaxconn=65536" | sudo tee /etc/sysctl.conf
 RUN sudo rm -f /usr/bin/php
 RUN sudo ln -s /usr/bin/php${PHP_VERSION} /usr/bin/php
 
+# Cypress testing support
+RUN sudo apt-get update 
+RUN sudo apt-get install -y xvfb 
+RUN sudo apt-get install -y xauth
+RUN sudo apt-get install -y libxtst6
+RUN sudo apt-get install -y libasound2
+RUN sudo apt-get install -y libxss1
+RUN sudo apt-get install -y libgconf-2-4 
+RUN sudo apt-get install -y libnotify-dev
+RUN sudo apt-get install -y libgbm-dev
+RUN sudo apt-get install -y libgtk-3-0
+RUN sudo apt-get install -y libgtk2.0
+
 # nvm environment variables
 RUN sudo mkdir -p /usr/local/nvm
 RUN sudo chown gitpod:gitpod /usr/local/nvm
