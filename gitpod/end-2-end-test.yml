@@ -1,0 +1,238 @@
+name: MageTested.com - End 2 End Tests
+
+on:
+# Enable this line to run the tests on every push
+  push:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - labeled
+
+jobs:
+  # Remove flag used to trigger the e2e tests
+  remove_flag:
+    if: ${{ contains(github.event.*.labels.*.name, 'run_e2e_tests') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove run E2E tests label
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.issues.removeLabel({
+              issue_number: ${{ github.event.issue.number || github.event.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "run_e2e_tests"
+            })
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      WORKING_DIR: ./
+      BIN_MAGENTO: bin/magento
+      MAGENTO_LOCALES: en_US
+      THEME_PATH: Magento/luma
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Generate auth.json when COMPOSER_AUTH_JSON is set
+        env:
+          auth_json: ${{ secrets.COMPOSER_AUTH_JSON }}
+        if: ${{ env.auth_json != '' }}
+        run: echo "$auth_json" > auth.json
+
+      # Get the composer cache directory so we can save it so GitHub Actions cache and restore it in the next run
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          if ! test -f "auth.json"; then
+            echo "Warning: You don't have an auth.json in place. Either commit it to this repository, or add it as a secret to your GitHub repository as COMPOSER_AUTH_JSON."
+            exit 1;
+          fi
+          composer validate --working-dir=$WORKING_DIR
+          echo "dir=$(composer config cache-files-dir --working-dir=$WORKING_DIR)" >> $GITHUB_OUTPUT
+
+      # Cache composer dependencies so the next run will be faster. Do NOT cache the vendor folder, as that would
+      # it would not trigger the automatic creation of bin/magento and other files.
+      - name: Cache vendor
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ steps.composer-cache.outputs.dir }}
+          key: vendor-${{ hashFiles('**/composer.lock') }}
+
+      - name: Runs Mailcatcher
+        run: |
+          docker run -d -p 1080:1080 -p 1025:1025 --name mailcatcher schickling/mailcatcher
+          go install github.com/mailhog/mhsendmail@latest
+
+      # Start mysql. If you have a database in place you can import it here.
+      - name: Start mysql & import database
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';" -uroot -proot
+          mysql -e 'CREATE DATABASE magento;' -uroot -proot
+          mysql -e "CREATE USER 'magento'@'localhost' IDENTIFIED BY 'magento';" -uroot -proot
+          mysql -e "GRANT ALL PRIVILEGES ON magento.* TO 'magento'@'localhost';" -uroot -proot
+          mysql -e "FLUSH PRIVILEGES;" -uroot -proot
+
+      - name: Set up environment with secret
+        run: |
+          if [ -z "${{ secrets.SECRET_KEY }}" ]; then
+          echo "USE_SECRET_KEY=DefaultSecretKeyStringThatIsLong" >> $GITHUB_ENV
+          else
+          echo "USE_SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          fi
+
+      # Copy the env.php.end-2-end file to env.php and replace the secret key
+#      - name: Dump env.php
+#        run: |
+#          #!/bin/bash
+#          set -e
+#          SECRET_KEY="${{ env.USE_SECRET_KEY }}"
+#          FILE="$WORKING_DIR/app/etc/env.php"
+#          cp "$FILE.end-2-end" $FILE
+#          sed -i "s/{{SECRET_KEY}}/$SECRET_KEY/g" $FILE
+
+      # Prepare for Elasticsearch
+      - name: Configure sysctl limits
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+
+      # Start Elasticsearch
+      - name: Runs Elasticsearch
+        uses: elastic/elastic-github-actions/elasticsearch@master
+        with:
+          stack-version: 7.6.0
+
+      - name: Runs Redis
+        uses: superchargejs/redis-github-action@1.1.0
+
+      # Off-course we need PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          ini-values: |
+            error_log=${{ github.workspace }}/${{ env.WORKING_DIR }}/var/log/php-error.log,sendmail_path="/home/runner/go/bin/mhsendmail --smtp-addr='localhost:1025'"
+
+      # Install node for building Hyva
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Run composer install
+      - name: Run Composer Install
+        run: |
+          composer install --no-interaction --no-progress --working-dir=$WORKING_DIR
+          composer require n98/magerun2-dist --dev
+
+      # Enable this when applicable: Build Hyvä
+      #- name: Build Hyvä
+      #  run: |
+      #    npm --prefix $WORKING_DIR/app/design/frontend/$THEME_PATH/web/tailwind ci
+      #    npm run --prefix $WORKING_DIR/app/design/frontend/$THEME_PATH/web/tailwind build-prod
+
+      # If you don't have an database in place you can go with the default Magento install
+      - name: Run Magento Install
+        run: |
+          $BIN_MAGENTO setup:install \
+            --backend-frontname=admin \
+            --db-host=localhost \
+            --db-name=magento \
+            --db-user=magento \
+            --db-password=magento \
+            --search-engine=opensearch \
+            --elasticsearch-host=localhost \
+            --elasticsearch-port=9200 \
+            --elasticsearch-index-prefix=magento2 \
+            --elasticsearch-enable-auth=0 \
+            --elasticsearch-timeout=15 \
+            --session-save=redis \
+            --session-save-redis-host=localhost \
+            --session-save-redis-port=6379 \
+            --session-save-redis-db=2 \
+            --session-save-redis-max-concurrency=20 \
+            --cache-backend=redis \
+            --cache-backend-redis-server=localhost \
+            --cache-backend-redis-db=0 \
+            --cache-backend-redis-port=6379 \
+            --page-cache=redis \
+            --page-cache-redis-server=localhost \
+            --page-cache-redis-db=1 \
+            --page-cache-redis-port=6379 \
+            --base-url=https://localhost \
+            --timezone=Europe/London \
+            --currency=EUR \
+            --admin-user=magetested \
+            --admin-password=magetested1 \
+            --admin-email=info@magetested.com \
+            --admin-firstname=Magetested \
+            --admin-lastname=Magetested \
+            --use-rewrites=1
+
+      # Run Magento Setup
+      - name: Run Magento setup:upgrade
+        run: |
+          $BIN_MAGENTO indexer:reindex
+          $BIN_MAGENTO config:set system/smtp/disable 0
+          $BIN_MAGENTO config:set system/smtp/transport smtp
+          $BIN_MAGENTO config:set system/smtp/port 1025
+        # smtp/general/enabled == mageplaza smtp module
+#          $BIN_MAGENTO config:set smtp/general/enabled 1
+#          $BIN_MAGENTO config:set smtp/configuration_option/host localhost
+#          $BIN_MAGENTO config:set smtp/configuration_option/port 1025
+#          $BIN_MAGENTO config:set smtp/configuration_option/username ""
+#          $BIN_MAGENTO config:set smtp/configuration_option/password ""
+
+      - name: Run setup:static-content:deploy
+        run: $BIN_MAGENTO setup:static-content:deploy -f --area frontend $MAGENTO_LOCALES -j 12
+
+      # Start the PHP server and redirect all output to var/log/php-server.log
+      - name: Start server
+        run: nohup php -S 0.0.0.0:8080 -t $WORKING_DIR/pub/ $WORKING_DIR/phpserver/router.php > $WORKING_DIR/var/log/php-server.log 2>&1 &
+
+      # Set the correct base url and check if the server is online
+      - name: Check if server is online
+        run: |
+          $BIN_MAGENTO
+          $BIN_MAGENTO config:set web/secure/base_url http://localhost:8080/
+          $BIN_MAGENTO config:set web/unsecure/base_url http://localhost:8080/
+          $BIN_MAGENTO config:set web/secure/base_link_url http://localhost:8080/
+          $BIN_MAGENTO config:set web/unsecure/base_link_url http://localhost:8080/
+          curl --fail-with-body -v http://localhost:8080
+
+      # If no package.json is present, copy package.json.sample to package.json
+      - name: Copy package.json.sample to package.json
+        run: |
+          if ! test -f "$WORKING_DIR/package.json"; then
+              cp "$WORKING_DIR/package.json.sample" "$WORKING_DIR/package.json"
+              npm install cypress --save-dev
+          fi
+
+      # Run Cypress tests
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          config: baseUrl=http://localhost:8080,defaultCommandTimeout=10000
+
+      # Upload artifacts on failure
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: Cypress logs ${{ github.run_number }}
+          path: |
+            ${{ env.WORKING_DIR }}/cypress/videos
+            ${{ env.WORKING_DIR }}/cypress/screenshots
+            ${{ env.WORKING_DIR }}/var/log
+            ${{ env.WORKING_DIR }}/var/report

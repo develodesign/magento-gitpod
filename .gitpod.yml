@@ -25,7 +25,8 @@ tasks:
             composer create-project --no-interaction --no-progress --repository-url=https://repo.magento.com/ magento/project-community-edition=${MAGENTO_VERSION} magento2 &&
             cd magento2 && cp -avr .* $GITPOD_REPO_ROOT;
             cd $GITPOD_REPO_ROOT && rm -r -f magento2 && git checkout -- .gitignore;
-            npm install cypress --save-dev
+            npm install cypress --save-dev;
+            mkdir -p .github/workflows && cp $GITPOD_REPO_ROOT/gitpod/end-2-end-test.yml .github/workflows/end-2-end-test.yml
     command: gp ports await 3306 &&
              cd $GITPOD_REPO_ROOT &&
              test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && $GITPOD_REPO_ROOT/gitpod/m2-install.sh ;
