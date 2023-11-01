@@ -19,7 +19,6 @@ github:
     branches: true
 tasks:
   - init: > 
-            sudo composer self-update &&
             cd $GITPOD_REPO_ROOT &&
             composer config -g -a http-basic.repo.magento.com ${MAGENTO_COMPOSER_AUTH_USER} ${MAGENTO_COMPOSER_AUTH_PASS} &&
             composer create-project --no-interaction --no-progress --repository-url=https://repo.magento.com/ magento/project-community-edition=${MAGENTO_VERSION} magento2 &&
