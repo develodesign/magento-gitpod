@@ -30,9 +30,10 @@ All configuration options including Magento versions and Admin login are found h
 - [x] Install Magento SQL once on first load, delete flag to reinstall
 - [x] Import staging SQL file replacing urls 
 - [x] Improve config to simplify configuring the build components
-- [ ] Magento 2.4.6 and PHP8.2 support
-- [ ] Add additional SQL and config updates, Magento config for SMTP details, Algolia indexing etc. 
-- [ ] Accept values for Magento configuration through Gitpod ENV
+- [x] Add MailPit SMTP mail catcher with zero config
+- [x] Magento 2.4.6 and PHP8.2 support
+- [x] Add additional SQL and config updates, Magento config for SMTP details, Algolia indexing etc. 
+- [x] Accept values for Magento configuration through Gitpod ENV
 
 
 # Credit
