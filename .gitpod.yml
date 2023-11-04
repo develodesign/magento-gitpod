@@ -4,6 +4,8 @@ ports:
 - port: 8002
   visibility: public
   onOpen: open-preview
+  name: Magento - Nginx
+  description: Shows the Magento Application
 - port: 9001
   onOpen: ignore
 - port: 15672
