@@ -10,7 +10,7 @@ ports:
   onOpen: ignore
   visibility: public
   name: RabbitMQ
-  description: RabbitMQ management UI
+  description: RabbitMQ Webinterface
 - port: 8025
   onOpen: ignore
   visibility: private
@@ -30,10 +30,6 @@ vscode:
   extensions:
     - TabNine.tabnine-vscode@3.4.14
     - felixfbecker.php-debug@1.16.0
-github:
-  prebuilds:
-    master: true
-    branches: true
 tasks:
   - init: > 
             sudo composer self-update &&
