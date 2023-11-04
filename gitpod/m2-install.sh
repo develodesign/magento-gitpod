@@ -32,6 +32,11 @@ php bin/magento config:set web/cookie/cookie_path "/" &&
 php bin/magento config:set web/cookie/cookie_domain ".gitpod.io" &&
 php bin/magento config:set system/full_page_cache/caching_application 1 &&
 php bin/magento deploy:mode:set developer &&
+php bin/magento config:set system/smtp/transport smtp &&
+php bin/magento config:set system/smtp/host "0.0.0.0" &&
+php bin/magento config:set system/smtp/port "1025" &&
+php bin/magento config:set system/smtp/username "magento@example.com" &&
+php bin/magento config:set system/smtp/password "pass" &&
 php bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth &&
 php bin/magento module:disable Magento_Csp  &&
 php bin/magento module:disable Magento_TwoFactorAuth  &&
