@@ -1,36 +1,19 @@
 # Gitpod Magento 2 Cloud Development Environment
 
 ## Introduction
-This repository serves as a springboard for developers to launch fully-configured Magento 2 development environments using Gitpod. With the focus on convenience and efficiency, it facilitates seamless Magento 2 development workflows in the cloud.
+This repository serves as a springboard to launch fully-configured Magento 2 CDE Cloud Development Environments using Gitpod.
 <br><br>
 
 ## Getting Started
-To begin using this environment, you need to have a Gitpod account. Once you have your account set up, fork this repository and launch your workspace with a single click. Gitpod will read the configuration files and set up the environment accordingly.
+Register for a free Gitpod Account [https://gitpod.io](https://gitpod.io).
+Fork this repository and launch your Magento CDE workspace with a single click.
 <br><br>
 
-## Features
-**Pre-configured Magento 2:** A ready-to-code Magento 2 environment set up with sensible defaults to start coding immediately.
 
-**Development Toolkit:** Includes ready to go tools that make you a super powered developer.
-
-**Automated Setups:** On every Gitpod workspace launch, the environment automatically configures itself, eliminating the need for manual setup.
-
-**Cloud-based Development:** Work from anywhere, on any machine, without the need to install and maintain a local development stack.
-<br><br>
-
-## Benefits of a Cloud Development Environment
-
-**Portability:** Whether you’re at home, in the office, or on the go, your development environment is accessible from any device with an internet connection.
-
-**Consistency:**  Every member of the team works within a standardized environment, reducing "it works on my machine" issues and streamlining collaboration.
-
-**Scalability:** Resources can be scaled according to the project's demands without the need for physical hardware upgrades.
-
-**Security:** With all code and data stored in the cloud, the security is centralized and can be managed more effectively than on individual local machines.
-
-**Cost-Efficiency:** Reduce expenses on hardware and energy. Pay only for the resources you use, when you use them.
 
 ## Zero config required development tools
+**Development Toolkit:** Includes ready to go tools that make you a super powered developer.
+
 **MailPit :**
 email catching and debugging
 
@@ -42,6 +25,9 @@ A great testing tool
 
 **Xdebug :**
 PHP debugger ready to go
+
+**N98-Magerun :**
+email catching and debugging
 <br><br>
  
 ## How to Use
