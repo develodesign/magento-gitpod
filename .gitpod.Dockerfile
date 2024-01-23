@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full:latest
+FROM gitpod/workspace-full-vnc
 
 # Magento Config
 ENV INSTALL_MAGENTO YES
@@ -21,6 +21,7 @@ ENV XDEBUG_DEFAULT_ENABLED YES
 # add node and npm to path so the commands are available
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+ENV CYPRESS_CACHE_FOLDER=/workspace/.cypress-cache
 
 RUN sudo apt-get update
 RUN sudo apt-get -y install lsb-release
@@ -40,6 +41,18 @@ RUN sudo mkdir -p /etc/bash_completion.d/cargo
 RUN sudo apt install -y php-dev
 RUN sudo apt install -y php-pear
 RUN sudo install-packages php-xdebug
+
+# Install Cypress dependencies
+RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    libgtk2.0-0 \
+    libgtk-3-0 \
+    libnotify-dev \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    xauth \
+    xvfb
 
 #Install php-fpm
 RUN sudo apt-get update \
