@@ -38,12 +38,13 @@ RUN sudo apt-get -y install gcc make autoconf libc-dev pkg-config
 RUN sudo apt-get -y install libmcrypt-dev
 RUN sudo mkdir -p /tmp/pear/cache
 RUN sudo mkdir -p /etc/bash_completion.d/cargo
-RUN sudo apt install -y php-dev
-RUN sudo apt install -y php-pear
+RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y php-dev
+RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y php-pear
 RUN sudo install-packages php-xdebug
 
 # Install Cypress dependencies
-RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN sudo apt-get update \
+    && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libgtk2.0-0 \
     libgtk-3-0 \
     libnotify-dev \
@@ -52,7 +53,8 @@ RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libasound2 \
     libxtst6 \
     xauth \
-    xvfb
+    xvfb \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 #Install php-fpm
 RUN sudo apt-get update \
