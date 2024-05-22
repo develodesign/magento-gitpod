@@ -7,17 +7,14 @@ ports:
   name: Magento - Nginx
   description: Magento Application
 - port: 15672
-  onOpen: ignore
   visibility: public
   name: RabbitMQ
   description: RabbitMQ Webinterface
 - port: 8025
-  onOpen: ignore
   visibility: private
   name: Mailpit
   description: Mailpit Webinterface
 - port: 1025
-  onOpen: ignore
   visibility: private
   name: Mailpit Mailserver
   description: Mailpit Endpoint
@@ -26,6 +23,8 @@ ports:
   visibility: private
   name: ElasticSearch
   description: ElasticSearch Server
+- port: 1000-8000
+  onOpen: ignore
 vscode:
   extensions:
     - TabNine.tabnine-vscode@3.4.14
