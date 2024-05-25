@@ -18,11 +18,6 @@ ports:
   name: Mailpit
   description: Mailpit Webinterface
   onOpen: ignore
-- port: 1025
-  visibility: private
-  name: Mailpit Mailserver
-  description: Mailpit Endpoint
-  onOpen: ignore
 - port: 49152
   visibility: private
   name: TabNine-vscode
