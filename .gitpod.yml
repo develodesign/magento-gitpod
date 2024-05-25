@@ -1,6 +1,8 @@
 image:
   file: .gitpod.Dockerfile
 ports:
+- port: 1000-9999
+  onOpen: ignore
 - port: 8002
   visibility: public
   onOpen: open-preview
@@ -10,20 +12,26 @@ ports:
   visibility: public
   name: RabbitMQ
   description: RabbitMQ Webinterface
+  onOpen: ignore
 - port: 8025
   visibility: private
   name: Mailpit
   description: Mailpit Webinterface
+  onOpen: ignore
 - port: 1025
   visibility: private
   name: Mailpit Mailserver
   description: Mailpit Endpoint
-- port: 9200
   onOpen: ignore
+- port: 49152
+  visibility: private
+  name: TabNine-vscode
+  description: TabNine.tabnine-vscode
+  onOpen: ignore
+- port: 9200
   visibility: private
   name: ElasticSearch
   description: ElasticSearch Server
-- port: 1000-8000
   onOpen: ignore
 vscode:
   extensions:
@@ -56,7 +64,7 @@ tasks:
              sudo sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf &&
              sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/mysql/conf.d/mysqld.cnf &&
              sudo sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/supervisor/conf.d/mysql.conf && 
-             docker run -d --restart unless-stopped --name=mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit &&
+             docker run -d --restart unless-stopped --name=mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit ;
              sudo /etc/init.d/supervisor start
   - name: "Nginx"
     command: gp ports await 3306 &&
