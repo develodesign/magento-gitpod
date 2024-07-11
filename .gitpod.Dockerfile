@@ -90,6 +90,7 @@ RUN set -ex; \
 		done; \
 	} | sudo debconf-set-selections; \
 	sudo apt-get update; \
+	sudo percona-release setup ps-57; \
 	sudo apt-get install -y \
 		percona-server-server-${PERCONA_MAJOR} percona-server-client-${PERCONA_MAJOR} percona-server-common-${PERCONA_MAJOR} \
 	;
