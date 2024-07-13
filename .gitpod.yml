@@ -40,6 +40,7 @@ tasks:
             composer create-project --no-interaction --no-progress --repository-url=https://repo.magento.com/ magento/project-community-edition=${MAGENTO_VERSION} magento2 &&
             cd magento2 && cp -avr .* $GITPOD_REPO_ROOT;
             cd $GITPOD_REPO_ROOT && rm -r -f magento2 && git checkout -- .gitignore;
+            if [[ $MAGENTO_INSTALL_MAGE_CACHE_CLEANER == YES ]]; then composer require --dev mage2tv/magento-cache-clean; fi
             npm install cypress --save-dev;
             mkdir -p .github/workflows && cp $GITPOD_REPO_ROOT/gitpod/end-2-end-test.yml .github/workflows/end-2-end-test.yml
     command: gp ports await 3306 &&
@@ -66,3 +67,9 @@ tasks:
     command: gp ports await 3306 &&
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              service nginx start
+  - name: "Mage Cache Cleaner"
+    command: if grep -q mage2tv/magento-cachde-clean $GITPOD_REPO_ROOT/composer.json; then
+                 vendor/bin/cache-clean.js --watch
+              else
+                 exit
+             fi
