@@ -68,7 +68,8 @@ tasks:
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              service nginx start
   - name: "Mage Cache Cleaner"
-    command: if grep -q mage2tv/magento-cache-clean $GITPOD_REPO_ROOT/composer.json; then
+    command: gp ports await 8002 &&
+             if grep -q mage2tv/magento-cache-clean $GITPOD_REPO_ROOT/composer.json; then
                  vendor/bin/cache-clean.js --watch;
              else
                  exit;
