@@ -49,7 +49,8 @@ tasks:
              url=$(gp url | awk -F"//" {'print $2'}) && url="https://8002-"$url"/"  &&
              php bin/magento config:set web/unsecure/base_url $url  &&
              php bin/magento config:set web/unsecure/base_link_url $url  &&
-             php bin/magento config:set web/secure/base_url $url
+             php bin/magento config:set web/secure/base_url $url &&
+             gp sync-done mage-ready
   - name: "Supervisor Services"
     command: cd $GITPOD_REPO_ROOT &&
              test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && sudo mv /var/lib/mysql $GITPOD_REPO_ROOT/ ;
@@ -68,8 +69,8 @@ tasks:
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              service nginx start
   - name: "Mage Cache Cleaner"
-    command: gp ports await 8002 &&
-             if grep -q mage2tv/magento-cache-clean $GITPOD_REPO_ROOT/composer.json; then
+    init: gp sync-await mage-ready
+    command: if grep -q mage2tv/magento-cache-clean $GITPOD_REPO_ROOT/composer.json; then
                  vendor/bin/cache-clean.js --watch;
              else
                  exit;
