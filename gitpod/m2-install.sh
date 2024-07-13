@@ -38,7 +38,6 @@ php bin/magento config:set system/smtp/port "1025" &&
 php bin/magento config:set system/smtp/username "magento@example.com" &&
 php bin/magento config:set system/smtp/password "pass" &&
 php bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth &&
-php bin/magento module:disable Magento_Csp  &&
 php bin/magento module:disable Magento_TwoFactorAuth  &&
 #php bin/magento config:set algoliasearch_credentials/credentials/enable_backend 0 &&
 echo "----------------------------------------------"
