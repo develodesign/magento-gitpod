@@ -28,6 +28,7 @@ echo "-----------------------------------------------"
 
 echo "==== 4. CONFIGURATION (config:set) CHANGES ===="
 php bin/magento config:set system/security/max_session_size_admin 1024000 &&
+php bin/magento config:set admin/security/session_lifetime 31536000 &&
 php bin/magento config:set web/cookie/cookie_path "/" &&
 php bin/magento config:set web/cookie/cookie_domain ".gitpod.io" &&
 php bin/magento config:set system/full_page_cache/caching_application 1 &&
@@ -38,8 +39,6 @@ php bin/magento config:set system/smtp/port "1025" &&
 php bin/magento config:set system/smtp/username "magento@example.com" &&
 php bin/magento config:set system/smtp/password "pass" &&
 php bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth &&
-php bin/magento module:disable Magento_Csp  &&
-php bin/magento module:disable Magento_TwoFactorAuth  &&
 #php bin/magento config:set algoliasearch_credentials/credentials/enable_backend 0 &&
 echo "----------------------------------------------"
 

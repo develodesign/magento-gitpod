@@ -40,6 +40,7 @@ tasks:
             composer create-project --no-interaction --no-progress --repository-url=https://repo.magento.com/ magento/project-community-edition=${MAGENTO_VERSION} magento2 &&
             cd magento2 && cp -avr .* $GITPOD_REPO_ROOT;
             cd $GITPOD_REPO_ROOT && rm -r -f magento2 && git checkout -- .gitignore;
+            if [[ $MAGENTO_INSTALL_MAGE_CACHE_CLEANER == YES ]]; then composer require --dev mage2tv/magento-cache-clean; fi;
             npm install cypress --save-dev;
             mkdir -p .github/workflows && cp $GITPOD_REPO_ROOT/gitpod/end-2-end-test.yml .github/workflows/end-2-end-test.yml
     command: gp ports await 3306 &&
@@ -48,13 +49,15 @@ tasks:
              url=$(gp url | awk -F"//" {'print $2'}) && url="https://8002-"$url"/"  &&
              php bin/magento config:set web/unsecure/base_url $url  &&
              php bin/magento config:set web/unsecure/base_link_url $url  &&
-             php bin/magento config:set web/secure/base_url $url
+             php bin/magento config:set web/secure/base_url $url &&
+             gp sync-done mage-ready
   - name: "Supervisor Services"
     command: cd $GITPOD_REPO_ROOT &&
              test ! -f $GITPOD_REPO_ROOT/gitpod/db-installed.flag && sudo mv /var/lib/mysql $GITPOD_REPO_ROOT/ ;
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
              sudo sed -i 's#$PHP_VERSION#'$PHP_VERSION'#g' /etc/supervisor/conf.d/sp-php-fpm.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-redis.conf /etc/supervisor/conf.d/redis.conf &&
+             sudo sed -i 's#$ELASTICSEARCH_VERSION#'$ELASTICSEARCH_VERSION'#g' $GITPOD_REPO_ROOT/gitpod/sp-elasticsearch.conf &&
              sudo cp $GITPOD_REPO_ROOT/gitpod/sp-elasticsearch.conf /etc/supervisor/conf.d/elasticsearch.conf &&
              sudo sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf &&
              sed -i 's#/var/lib/mysql#'$GITPOD_REPO_ROOT'/mysql#g' /etc/mysql/conf.d/mysqld.cnf &&
@@ -65,3 +68,10 @@ tasks:
     command: gp ports await 3306 &&
              sudo sed -i 's#$GITPOD_REPO_ROOT#'$GITPOD_REPO_ROOT'#g' /etc/nginx/nginx.conf &&
              service nginx start
+  - name: "Mage Cache Cleaner"
+    init: gp sync-await mage-ready
+    command: if grep -q mage2tv/magento-cache-clean $GITPOD_REPO_ROOT/composer.json; then
+                 vendor/bin/cache-clean.js --watch;
+             else
+                 exit;
+             fi;

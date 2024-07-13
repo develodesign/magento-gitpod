@@ -2,18 +2,19 @@ FROM gitpod/workspace-full:latest
 
 # Magento Config
 ENV INSTALL_MAGENTO YES
-ENV MAGENTO_VERSION 2.4.6
+ENV MAGENTO_VERSION 2.4.7-p1
 ENV MAGENTO_ADMIN_EMAIL admin@magento.com
 ENV MAGENTO_ADMIN_PASSWORD password1
 ENV MAGENTO_ADMIN_USERNAME admin
 ENV MAGENTO_COMPOSER_AUTH_USER 64229a8ef905329a184da4f174597d25
 ENV MAGENTO_COMPOSER_AUTH_PASS a0df0bec06011c7f1e8ea8833ca7661e
+ENV MAGENTO_INSTALL_MAGE_CACHE_CLEANER YES
 
 # Platform Config
-ENV PHP_VERSION 8.2
+ENV PHP_VERSION 8.3
 ENV PERCONA_MAJOR 5.7
 ENV ELASTICSEARCH_VERSION 7.9.3
-ENV COMPOSER_VERSION 2.3.5
+ENV COMPOSER_VERSION 2.7.6
 ENV NODE_VERSION 14.17.3
 ENV MYSQL_ROOT_PASSWORD nem4540
 ENV XDEBUG_DEFAULT_ENABLED YES
@@ -90,6 +91,7 @@ RUN set -ex; \
 		done; \
 	} | sudo debconf-set-selections; \
 	sudo apt-get update; \
+	sudo percona-release setup ps-57; \
 	sudo apt-get install -y \
 		percona-server-server-${PERCONA_MAJOR} percona-server-client-${PERCONA_MAJOR} percona-server-common-${PERCONA_MAJOR} \
 	;
